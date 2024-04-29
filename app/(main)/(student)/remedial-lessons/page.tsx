@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function QuizzesPage() {
+export default function RemedialLessonsPage() {
   return <div>QuizzesPage</div>;
 }

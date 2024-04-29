@@ -27,15 +27,11 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="flex flex-1 flex-col gap-y-4">
         <SidebarItem label="الدروس" href="/learn" iconSrc="/open-book.svg" />
         <SidebarItem
-          label="الاختبارات القصيرة"
-          href="/quizzes"
-          iconSrc="/target.svg"
+          label="دروس التدارك"
+          href="/remedial-lessons"
+          iconSrc="/archive.svg"
         />
-        <SidebarItem
-          label="الامتحانات"
-          href="/tests"
-          iconSrc="/book-pencil.svg"
-        />
+        <SidebarItem label="الامتحانات" href="/tests" iconSrc="/grade.svg" />
       </div>
     </div>
   );
