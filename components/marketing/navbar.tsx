@@ -92,9 +92,13 @@ export function Navbar() {
 
           <div className="flex items-center gap-x-5 md:gap-x-8">
             <div className="hidden md:block">
-              <Button> تسجيل الدخول </Button>
+              <Button asChild>
+                <Link href="/auth/sign-in">تسجيل الدخول</Link>
+              </Button>
             </div>
-            <Button variant="primary"> ابدأ الآن </Button>
+            <Button variant="primary" asChild>
+              <Link href="/auth/sign-up">إنشاء حساب</Link>
+            </Button>
             <div className="-mr-1 md:hidden">
               <HamburgerMenuIcon className="h-6 w-6" />
             </div>

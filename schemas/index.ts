@@ -13,7 +13,7 @@ export const SignInSchema = z.object({
       required_error: "كلمة المرور مطلوبة",
       invalid_type_error: "يجب أن تكون كلمة المرور نص",
     })
-    .min(8, { message: "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل" }),
+    .min(6, { message: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل" }),
 });
 
 export const SignUpSchema = z.object({
@@ -33,15 +33,20 @@ export const SignUpSchema = z.object({
     required_error: "تأكيد كلمة المرور مطلوب",
     invalid_type_error: "يجب أن تكون تأكيد كلمة المرور نص",
   }),
-  name: z
+  firstname: z
     .string({
       required_error: "الاسم مطلوب",
       invalid_type_error: "يجب أن يكون الاسم نص",
     })
     .min(2, { message: "يجب أن يحتوي الاسم على حرفين على الأقل" }),
-  role: z.nativeEnum(ERole, {
-    required_error: "الدور مطلوب",
-    invalid_type_error: "الدور غير صحيح",
+  lastname: z
+    .string({
+      required_error: "اللقب مطلوب",
+      invalid_type_error: "يجب أن يكون اللقب نص",
+    })
+    .min(2, { message: "يجب أن يحتوي اللقب على حرفين على الأقل" }),
+  roles: z.array(z.nativeEnum(ERole), {
+    required_error: "يجب اختيار دور واحد على الأقل",
   }),
 });
 

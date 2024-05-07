@@ -3,10 +3,13 @@
 import React from "react";
 
 import Link from "next/link";
+import { ParentIcon } from "@/icons/parent-icon";
+import { TeacherIcon } from "@/icons/teacher-icon";
 import { SignUpSchema, SignUpValues } from "@/schemas";
 import { ERole } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
+import axios, { AxiosError } from "axios";
 import { motion } from "framer-motion";
 import { User2Icon, UserCircleIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -38,12 +41,12 @@ const steps: StepsType[] = [
   {
     id: "role",
     name: "Role Selection",
-    fields: ["role"],
+    fields: ["roles"],
   },
   {
     id: "personal",
     name: "Fundamental Information",
-    fields: ["name", "email"],
+    fields: ["firstname", "lastname", "email"],
   },
   {
     id: "password",
@@ -57,6 +60,10 @@ const steps: StepsType[] = [
 ];
 
 export function SignUpForm() {
+  const [isPending, startTransition] = React.useTransition();
+  const [success, setSuccess] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
   const [currentStep, setCurrentStep] = React.useState<number>(0);
   const [previousStep, setPreviousStep] = React.useState<number>(0);
   const delta = currentStep - previousStep;
@@ -64,13 +71,26 @@ export function SignUpForm() {
   const signUpForm = useForm<SignUpValues>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
       confirmPassword: "",
-      name: "",
-      role: ERole.ROLE_PARENT,
+      roles: [],
     },
   });
+
+  const signUp = async (values: SignUpValues) => {
+    try {
+      startTransition(async () => {
+        await axios.post("http://localhost:8080/api/auth/signup", values);
+        setSuccess("تم إنشاء الحساب بنجاح");
+      });
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      console.error(axiosError.response?.data);
+    }
+  };
 
   const next = async () => {
     const fields = steps[currentStep].fields;
@@ -83,7 +103,7 @@ export function SignUpForm() {
 
     if (currentStep < steps.length - 1) {
       if (currentStep === steps.length - 2) {
-        await signUpForm.handleSubmit(() => {})();
+        await signUpForm.handleSubmit(signUp)();
       }
       setPreviousStep(currentStep);
       setCurrentStep((step) => step + 1);
@@ -100,7 +120,7 @@ export function SignUpForm() {
   return (
     <>
       <Form {...signUpForm}>
-        <form onSubmit={signUpForm.handleSubmit(() => {})}>
+        <form onSubmit={signUpForm.handleSubmit(signUp)} className="grid gap-4">
           {currentStep === 0 && (
             <motion.div
               initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
@@ -109,7 +129,7 @@ export function SignUpForm() {
             >
               <FormField
                 control={signUpForm.control}
-                name="role"
+                name="roles"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
                     <FormLabel>الدور</FormLabel>
@@ -119,22 +139,23 @@ export function SignUpForm() {
                     <FormMessage />
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="grid max-w-xl grid-cols-2 gap-4 pt-4"
+                      defaultValue={field.value.toString()}
+                      className="grid w-full grid-cols-2 gap-4 pt-4"
                     >
                       <FormItem>
                         <FormLabel className="ring-white/60 ring-offset-2 ring-offset-sky-600 [&:has([data-state=checked])>div]:ring-2">
                           <FormControl>
                             <RadioGroupItem
-                              value={ERole.ROLE_PARENT}
+                              // @ts-ignore
+                              value={Array(ERole.ROLE_PARENT)}
                               className="sr-only"
                             />
                           </FormControl>
                           <RoleCard
                             title="ولي"
-                            description="وصف"
-                            checked={field.value === ERole.ROLE_PARENT}
-                            icon={User2Icon}
+                            description="إضافة أطفالك وإدارة تقدمهم في التعلم"
+                            checked={field.value[0] === ERole.ROLE_PARENT}
+                            icon={ParentIcon}
                           />
                         </FormLabel>
                       </FormItem>
@@ -143,15 +164,16 @@ export function SignUpForm() {
                         <FormLabel className="ring-white/60 ring-offset-2 ring-offset-sky-600 [&:has([data-state=checked])>div]:ring-2">
                           <FormControl>
                             <RadioGroupItem
-                              value={ERole.ROLE_TEACHER}
+                              // @ts-ignore
+                              value={Array(ERole.ROLE_TEACHER)}
                               className="sr-only"
                             />
                           </FormControl>
                           <RoleCard
                             title="معلم"
-                            description="وصف"
-                            checked={field.value === ERole.ROLE_TEACHER}
-                            icon={UserCircleIcon}
+                            description="إنشاء وإدارة الدروس والمواد التعليمية"
+                            checked={field.value[0] === ERole.ROLE_TEACHER}
+                            icon={TeacherIcon}
                           />
                         </FormLabel>
                       </FormItem>
@@ -171,10 +193,30 @@ export function SignUpForm() {
             >
               <FormField
                 control={signUpForm.control}
-                name="name"
+                name="firstname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الاسم</FormLabel>
+                    <FormLabel>
+                      الاسم الأول
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={signUpForm.control}
+                name="lastname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      اسم العائلة
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -188,7 +230,10 @@ export function SignUpForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>البريد الإلكتروني</FormLabel>
+                    <FormLabel>
+                      البريد الإلكتروني
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input type="email" {...field} />
                     </FormControl>
@@ -236,7 +281,13 @@ export function SignUpForm() {
             </motion.div>
           )}
 
-          {currentStep === 3 && (
+          {currentStep === 3 && isPending && (
+            <div className="flex items-center justify-center">
+              <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-sky-500" />
+            </div>
+          )}
+
+          {currentStep === 3 && success && (
             <>
               <motion.div
                 initial={{ x: delta >= 0 ? "50%" : "-50%", opacity: 0 }}
@@ -304,17 +355,17 @@ function RoleCard({ title, description, checked, icon: Icon }: RoleCardProps) {
   return (
     <div
       className={cn(
-        "flex cursor-pointer items-center rounded-xl border bg-muted/40 p-4",
+        "flex cursor-pointer flex-col items-center space-y-4 rounded-xl border bg-muted/40 p-6 transition-colors duration-200 ease-in-out",
         {
-          "bg-sky-100 text-sky-900": checked,
+          "border-2 border-sky-700 bg-sky-400": checked,
           "bg-white text-muted-foreground": !checked,
         },
       )}
     >
-      <Icon className="h-8 w-8" />
-      <div className="ml-4">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-sm">{description}</p>
+      <Icon className="h-10 w-10" />
+      <div className="flex flex-col items-center space-y-1">
+        <h1 className="text-lg font-semibold">{title}</h1>
+        <p className="text-center text-sm">{description}</p>
       </div>
     </div>
   );

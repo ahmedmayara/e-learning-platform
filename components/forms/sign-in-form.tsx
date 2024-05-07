@@ -3,8 +3,11 @@
 import React from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SignInSchema, SignInValues } from "@/schemas";
+import { ERole } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +21,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+interface AxiosSignInResponse {
+  id: {
+    timestamp: number;
+    date: string;
+  };
+  email: string;
+  accessToken: string;
+  tokenType: string;
+  roles: string[];
+}
+
 export function SignInForm() {
+  const [error, setError] = React.useState<string | null>(null);
+
+  const router = useRouter();
+
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -26,12 +44,33 @@ export function SignInForm() {
       password: "",
     },
   });
+
+  const onSubmit = async (values: SignInValues) => {
+    try {
+      await axios
+        .post<AxiosSignInResponse>(
+          "http://localhost:8080/api/auth/signin",
+          values,
+        )
+        .then((res) => {
+          if (res.data.roles.includes(ERole.ROLE_PARENT)) {
+            console.log(res.data);
+          }
+        });
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+      }
+    }
+  };
+
   return (
     <div>
       <Form {...signInForm}>
         <form
           className="grid gap-4"
-          onSubmit={signInForm.handleSubmit(() => {})}
+          onSubmit={signInForm.handleSubmit(onSubmit)}
         >
           <FormField
             control={signInForm.control}
@@ -70,6 +109,13 @@ export function SignInForm() {
               </FormItem>
             )}
           />
+
+          {error && (
+            <div className="flex justify-end rounded-xl border-e-4 border-red-600 bg-red-200 p-4 px-6 text-sm font-medium text-red-600">
+              {error}
+            </div>
+          )}
+
           <Button variant="primary" type="submit" className="w-full">
             تسجيل الدخول
           </Button>
