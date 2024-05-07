@@ -11,6 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { Button } from "./ui/button";
+
 const teachers: Teacher[] = [
   {
     id: "1",
@@ -46,6 +48,7 @@ export function TeachersTable() {
           <TableHead>الاسم</TableHead>
           <TableHead>البريد الإلكتروني</TableHead>
           <TableHead>الدور</TableHead>
+          <TableHead>الإجراءات</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -61,6 +64,16 @@ export function TeachersTable() {
                   return "معلم";
                 }
               })}
+            </TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" size="sm">
+                  تحقق
+                </Button>
+                <Button variant="destructive" size="sm">
+                  حذف
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

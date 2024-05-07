@@ -1,7 +1,7 @@
 export enum ERole {
-  ROLE_PARENT,
-  ROLE_TEACHER,
-  ROLE_ADMIN,
+  ROLE_PARENT = "ROLE_PARENT",
+  ROLE_TEACHER = "ROLE_TEACHER",
+  ROLE_ADMIN = "ROLE_ADMIN",
 }
 
 export interface Role {
