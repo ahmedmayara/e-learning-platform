@@ -50,5 +50,25 @@ export const SignUpSchema = z.object({
   }),
 });
 
+export const AddChildSchema = z.object({
+  firstname: z
+    .string({
+      required_error: "الاسم مطلوب",
+      invalid_type_error: "يجب أن يكون الاسم نص",
+    })
+    .min(2, { message: "يجب أن يحتوي الاسم على حرفين على الأقل" }),
+  lastname: z
+    .string({
+      required_error: "اللقب مطلوب",
+      invalid_type_error: "يجب أن يكون اللقب نص",
+    })
+    .min(2, { message: "يجب أن يحتوي اللقب على حرفين على الأقل" }),
+  school_level: z.string({
+    required_error: "المستوى الدراسي مطلوب",
+    invalid_type_error: "يجب أن يكون المستوى الدراسي نص",
+  }),
+});
+
 export type SignInValues = z.infer<typeof SignInSchema>;
 export type SignUpValues = z.infer<typeof SignUpSchema>;
+export type AddChildValues = z.infer<typeof AddChildSchema>;

@@ -1,46 +1,62 @@
 import React from "react";
 
+import { cookies } from "next/headers";
+import { Student } from "@/types";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
+import axios from "axios";
 import { StickerIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-export default function ProfileSelectionPage() {
+import { ChildProfileBox } from "@/components/child-profile-box";
+import { AddChildForm } from "@/components/forms/add-child-form";
+
+interface GetParentChildrenResponse {
+  id: { timestamp: number; date: string };
+  email: string;
+  roles: [{ name: string }];
+  children: Student[];
+  firstname: string;
+  lastname: string;
+}
+
+const getParentChildren = async (
+  email: string | undefined,
+): Promise<GetParentChildrenResponse> => {
+  return axios
+    .get<GetParentChildrenResponse>(
+      `http://localhost:8080/api/parents/${email}`,
+    )
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};
+
+export default async function ProfileSelectionPage() {
+  const email = cookies().get("email")?.value;
+  const parent = await getParentChildren(email);
   return (
     <div className="grid h-screen place-content-center bg-muted/40">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
-        <ProfileBox title="Child 1" className="bg-rose-500" />
-        <ProfileBox title="Child 2" className="bg-blue-500" />
-        <ProfileBox title="Child 3" className="bg-green-500" />
-        <ProfileBox title="Child 4" className="bg-yellow-500" />
-        <div className="flex flex-col items-center">
-          <div className="flex items-center justify-center rounded-lg border bg-gray-500 p-4">
-            <PlusCircledIcon className="h-28 w-28 text-white" />
+        {parent.children.length > 0 &&
+          parent.children.map((child) => (
+            <ChildProfileBox
+              key={child.id}
+              title={`${child.firstname} ${child.lastname}`}
+              href={`/learn/${child.firstname}`}
+            />
+          ))}
+        {parent.children.length === 0 || parent.children.length < 5 ? (
+          <div className="flex items-center justify-center">
+            <AddChildForm />
           </div>
-          <h3 className="mt-4 text-lg font-semibold">Create a new profile</h3>
-        </div>
+        ) : null}
       </div>
-    </div>
-  );
-}
-
-interface ProfileBoxProps {
-  title: string;
-  className?: string;
-}
-
-function ProfileBox({ title, className }: ProfileBoxProps) {
-  return (
-    <div className="flex flex-col items-center">
-      <div
-        className={cn(
-          "flex cursor-pointer items-center justify-center rounded-lg border p-4",
-          className,
-        )}
-      >
-        <StickerIcon className="h-28 w-28 text-white" />
-      </div>
-      <h3 className="mt-4 text-lg font-semibold">{title}</h3>
     </div>
   );
 }

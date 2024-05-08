@@ -8,6 +8,7 @@ import { SignInSchema, SignInValues } from "@/schemas";
 import { ERole } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
+import { useCookies } from "next-client-cookies";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ interface AxiosSignInResponse {
 }
 
 export function SignInForm() {
+  const cookies = useCookies();
   const [error, setError] = React.useState<string | null>(null);
 
   const router = useRouter();
@@ -54,7 +56,11 @@ export function SignInForm() {
         )
         .then((res) => {
           if (res.data.roles.includes(ERole.ROLE_PARENT)) {
-            console.log(res.data);
+            cookies.set("accessToken", res.data.accessToken, {
+              secure: true,
+            });
+            cookies.set("email", res.data.email, { secure: true });
+            router.push("/auth/profile");
           }
         });
     } catch (error: any) {

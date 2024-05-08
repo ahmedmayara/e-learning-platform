@@ -6,6 +6,8 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { SidebarItem } from "./sidebar-item";
 
 interface SidebarProps {
@@ -32,6 +34,53 @@ export function Sidebar({ className }: SidebarProps) {
           iconSrc="/archive.svg"
         />
         <SidebarItem label="الامتحانات" href="/tests" iconSrc="/grade.svg" />
+
+        <div className="mt-auto">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="mb-4 h-[55px] w-full justify-between">
+                <Image
+                  src="/user.svg"
+                  alt="Profile"
+                  className="mr-5"
+                  height="32"
+                  width="32"
+                />
+                الحساب
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="flex flex-col space-y-4">
+                <Button
+                  variant="primaryOutline"
+                  className="h-[55px] w-full justify-between"
+                >
+                  <Image
+                    src="/refresh.svg"
+                    alt="Switch account"
+                    className="mr-5"
+                    height="32"
+                    width="32"
+                  />
+                  تبديل الحساب
+                </Button>
+                <Button
+                  variant="destructiveOutline"
+                  className="h-[55px] w-full justify-between"
+                >
+                  <Image
+                    src="/logout.svg"
+                    alt="Logout"
+                    className="mr-5"
+                    height="32"
+                    width="32"
+                  />
+                  تسجيل الخروج
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
   );

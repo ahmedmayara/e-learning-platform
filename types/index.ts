@@ -21,9 +21,9 @@ export interface User {
 
 export interface Student {
   id: string;
-  firstName: string;
-  lastName: string;
-  schoolLevel: string;
+  firstname: string;
+  lastname: string;
+  school_level: string;
 }
 
 export interface Parent {

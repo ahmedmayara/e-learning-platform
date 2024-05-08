@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-export default function LearnPage() {
+interface LearnPageProps {
+  params: {
+    name: string;
+  };
+}
+
+export default function LearnPage({ params }: LearnPageProps) {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col items-end gap-y-2">
