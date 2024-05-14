@@ -3,6 +3,7 @@
 import React from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
+  const router = useRouter();
   return (
     <div
       className={cn(
@@ -54,6 +56,9 @@ export function Sidebar({ className }: SidebarProps) {
                 <Button
                   variant="primaryOutline"
                   className="h-[55px] w-full justify-between"
+                  onClick={() => {
+                    router.push("/auth/profile?switch=true");
+                  }}
                 >
                   <Image
                     src="/refresh.svg"

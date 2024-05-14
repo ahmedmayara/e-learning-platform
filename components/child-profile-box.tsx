@@ -1,28 +1,26 @@
 import React from "react";
 
 import Link from "next/link";
-
-import { cn } from "@/lib/utils";
+import { Student } from "@/types";
 
 interface ProfileBoxProps {
-  title: string;
+  child: Student;
+
   href: string;
-  className?: string;
 }
 
-export function ChildProfileBox({ title, href, className }: ProfileBoxProps) {
+export function ChildProfileBox({ child, href }: ProfileBoxProps) {
   return (
     <div className="flex flex-col items-center">
       <Link
         href={href}
-        className={cn(
-          "flex h-36 w-36 cursor-pointer items-center justify-center rounded-lg border bg-muted",
-          className,
-        )}
+        className="flex h-36 w-36 cursor-pointer items-center justify-center rounded-lg border bg-muted"
       >
-        <p className="text-7xl font-bold">{title.charAt(0).toUpperCase()}</p>
+        <p className="text-7xl font-bold">
+          {child.firstname.charAt(0).toUpperCase()}
+        </p>
       </Link>
-      <h3 className="mt-4 text-lg font-semibold">{title}</h3>
+      <h3 className="mt-4 text-lg font-semibold">{`${child.firstname} ${child.lastname}`}</h3>
     </div>
   );
 }

@@ -132,10 +132,12 @@ export function SignUpForm() {
                 name="roles"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel>الدور</FormLabel>
-                    <FormDescription>
-                      اختر الدور الذي يصفك بشكل أفضل
-                    </FormDescription>
+                    <div className="flex flex-col items-end">
+                      <FormLabel>الدور</FormLabel>
+                      <FormDescription>
+                        اختر الدور الذي يصفك بشكل أفضل
+                      </FormDescription>
+                    </div>
                     <FormMessage />
                     <RadioGroup
                       onValueChange={field.onChange}
