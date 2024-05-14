@@ -69,19 +69,21 @@ export function ProfileClient({ parent }: ProfileClientProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
       {!switchAccount && (
-        <div className="col-span-1 sm:col-span-2">
-          <h2 className="text-2xl font-semibold">Your Children</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {parent.children.map((child) => (
+        <>
+          {parent.children.length > 0 &&
+            parent.children.map((child) => (
               <ChildProfileBox
                 key={child.id}
                 child={child}
-                href={`/auth/profile/${child.id}`}
+                href={`/learn/${child.id}`}
               />
             ))}
-            <AddChildForm />
-          </div>
-        </div>
+          {parent.children.length === 0 || parent.children.length < 5 ? (
+            <div className="flex items-center justify-center">
+              <AddChildForm />
+            </div>
+          ) : null}
+        </>
       )}
 
       {switchAccount ? (
