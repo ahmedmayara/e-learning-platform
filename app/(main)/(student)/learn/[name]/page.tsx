@@ -1,6 +1,9 @@
 import React from "react";
 
 import Image from "next/image";
+import Link from "next/link";
+import { Course } from "@/types";
+import axios from "axios";
 import { DownloadIcon, EyeIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +16,22 @@ interface LearnPageProps {
   };
 }
 
-export default function LearnPage({ params }: LearnPageProps) {
+const getAllCourses = async (): Promise<Course[]> => {
+  return axios
+    .get("http://localhost:8080/api/courses/courses")
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};
+
+export default async function LearnPage({ params }: LearnPageProps) {
+  const courses = await getAllCourses();
+  console.log(courses);
   return (
     <div className="flex flex-col">
       <div className="flex flex-col items-end gap-y-2">
@@ -26,15 +44,20 @@ export default function LearnPage({ params }: LearnPageProps) {
       <Separator className="mb-6 mt-4 px-8" />
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
-        {[...Array(8)].map((_, index) => (
-          <CourseCard key={index} />
+        {/* @ts-ignore */}
+        {courses.courses.map((course, index) => (
+          <CourseCard course={course} key={index} />
         ))}
       </div>
     </div>
   );
 }
 
-function CourseCard() {
+interface CourseCardProps {
+  course: Course;
+}
+
+function CourseCard({ course }: CourseCardProps) {
   return (
     <Card className="w-full max-w-sm rounded-xl border">
       <div className="flex h-[200px] items-center justify-center rounded-t-xl bg-muted">
@@ -42,22 +65,30 @@ function CourseCard() {
       </div>
       <CardContent className="flex flex-col gap-4 p-6">
         <div className="flex flex-col items-end gap-1">
-          <h3 className="line-clamp-2 text-lg font-semibold">
-            الرياضيات الفصل الأول
-          </h3>
-          <p className="text-sm text-muted-foreground">١٢ درس - ١٢ تمرين</p>
+          <h3 className="line-clamp-2 text-lg font-semibold">{course.name}</h3>
+          <p className="text-sm text-muted-foreground">{course.term} الفصل</p>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm">
-              <EyeIcon className="h-5 w-5" />
-            </Button>
-            <Button variant="indigo" size="sm">
-              <DownloadIcon className="h-5 w-5" />
-            </Button>
+            {course.video_url && (
+              <Button variant="secondary" size="sm" asChild>
+                <Link href={course.video_url} target="_blank">
+                  <EyeIcon className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
+            {course.pdf_url && (
+              <Button variant="indigo" size="sm" asChild>
+                <Link href={course.pdf_url} download>
+                  <DownloadIcon className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <span className="font-medium">أحمد علي</span>
+            <span className="font-medium">
+              {course.teacher.firstname} {course.teacher.lastname}
+            </span>
             <Image
               alt="Instructor"
               className="overflow-hidden rounded-full object-cover"

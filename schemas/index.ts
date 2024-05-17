@@ -1,4 +1,4 @@
-import { ERole } from "@/types";
+import { ERole, Teacher } from "@/types";
 import * as z from "zod";
 
 export const SignInSchema = z.object({
@@ -69,6 +69,44 @@ export const AddChildSchema = z.object({
   }),
 });
 
+export const AddCourseSchema = z.object({
+  video_url: z.optional(
+    z.string({
+      required_error: "رابط الفيديو مطلوب",
+      invalid_type_error: "يجب أن يكون رابط الفيديو نص",
+    }),
+  ),
+  pdf_url: z.optional(
+    z.string({
+      required_error: "رابط الملف مطلوب",
+      invalid_type_error: "يجب أن يكون رابط الملف نص",
+    }),
+  ),
+  name: z
+    .string({
+      required_error: "الاسم مطلوب",
+      invalid_type_error: "يجب أن يكون الاسم نص",
+    })
+    .min(2, { message: "يجب أن يحتوي الاسم على حرفين على الأقل" }),
+  term: z.string({
+    required_error: "الفصل مطلوب",
+    invalid_type_error: "يجب أن يكون الفصل نص",
+  }),
+  schoolLevel: z.string({
+    required_error: "المستوى الدراسي مطلوب",
+    invalid_type_error: "يجب أن يكون المستوى الدراسي نص",
+  }),
+  subject: z.string({
+    required_error: "المادة مطلوبة",
+    invalid_type_error: "يجب أن تكون المادة نص",
+  }),
+  date_of_addition: z.string({
+    required_error: "تاريخ الإضافة مطلوب",
+    invalid_type_error: "يجب أن يكون تاريخ الإضافة نص",
+  }),
+});
+
 export type SignInValues = z.infer<typeof SignInSchema>;
 export type SignUpValues = z.infer<typeof SignUpSchema>;
 export type AddChildValues = z.infer<typeof AddChildSchema>;
+export type AddCourseValues = z.infer<typeof AddCourseSchema>;

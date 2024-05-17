@@ -1,6 +1,9 @@
 import React from "react";
 
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { Course, Teacher } from "@/types";
+import axios from "axios";
 
 import {
   Breadcrumb,
@@ -10,7 +13,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,9 +21,43 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { AddCourseDialog } from "./_components/add-course-dialog";
 import { CoursesTable } from "./_components/courses-table";
 
-export default function TeacherCoursesPage() {
+const getTeacherCourses = async (
+  teacherId: string | undefined,
+): Promise<Course[]> => {
+  return axios
+    .get("http://localhost:8080/api/courses/teachers/" + teacherId)
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};
+
+const getTeacherByEmail = async (
+  email: string | undefined,
+): Promise<Teacher> => {
+  return axios
+    .get("http://localhost:8080/api/teachers/" + email)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};
+
+export default async function TeacherCoursesPage() {
+  const teacherId = cookies().get("teacherId")?.value;
+  const teacherEmail = cookies().get("email")?.value;
+  const teacher = await getTeacherByEmail(teacherEmail);
+  const courses = await getTeacherCourses(teacherId);
   return (
     <div className="flex flex-col gap-4">
       <Breadcrumb>
@@ -46,9 +82,7 @@ export default function TeacherCoursesPage() {
 
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">جميع الدروس</h2>
-        <Button variant="primaryOutline">
-          <Link href="#">إضافة درس</Link>
-        </Button>
+        <AddCourseDialog teacher={teacher} />
       </div>
 
       <Card>
@@ -59,7 +93,7 @@ export default function TeacherCoursesPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CoursesTable />
+          <CoursesTable courses={courses} />
         </CardContent>
       </Card>
     </div>

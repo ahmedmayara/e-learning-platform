@@ -5,7 +5,6 @@ import { Student } from "@/types";
 
 interface ProfileBoxProps {
   child: Student;
-
   href: string;
 }
 

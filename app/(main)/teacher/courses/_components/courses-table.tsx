@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Course, ERole } from "@/types";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,37 +17,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const courses: Course[] = [
-  {
-    id: "1",
-    videoUrl: "https://www.youtube.com/watch?v=9bZkp7q19f0",
-    pdfUrl: "https://www.example.com",
-    name: "دورة تصميم الواجهات",
-    term: 1,
-    schoolLevel: "المرحلة الثانوية",
-    subject: "التصميم",
-    dateOfCreation: "2021-10-01",
-    teacher: {
-      id: "1",
-      user: {
-        id: "1",
-        firstName: "محمد",
-        lastName: "علي",
-        email: "ali@example.com",
-        dateOfBirth: "1990-01-01",
-        password: "123456",
-        roles: [
-          {
-            id: "1",
-            name: ERole.ROLE_TEACHER,
-          },
-        ],
-      },
-    },
-  },
-];
+interface CoursesTableProps {
+  courses: Course[];
+}
 
-export function CoursesTable() {
+const deleteCourse = async (courseId: string) => {
+  return axios
+    .delete("http://localhost:8080/api/courses/" + courseId)
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};
+
+export function CoursesTable({ courses }: CoursesTableProps) {
+  const router = useRouter();
+
+  React.useEffect(() => {
+    router.refresh();
+  }, [courses]);
   return (
     <Table>
       <TableHeader>
@@ -77,18 +73,21 @@ export function CoursesTable() {
             <TableCell>{course.schoolLevel}</TableCell>
             <TableCell>{course.subject}</TableCell>
             <TableCell className="hidden md:table-cell">
-              {course.teacher.user.firstName} {course.teacher.user.lastName}
+              {course.teacher.firstname} {course.teacher.lastname}
             </TableCell>
             <TableCell className="hidden md:table-cell">
-              {course.dateOfCreation}
+              {new Date(course.date_of_addition).toLocaleDateString("en-US")}
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-4">
-                <Button size="sm">عرض</Button>
                 <Button variant="indigoOutline" size="sm">
                   تعديل
                 </Button>
-                <Button variant="destructiveOutline" size="sm">
+                <Button
+                  variant="destructiveOutline"
+                  size="sm"
+                  onClick={() => deleteCourse(course.id)}
+                >
                   حذف
                 </Button>
               </div>

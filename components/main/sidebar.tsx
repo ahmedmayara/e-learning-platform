@@ -4,6 +4,8 @@ import React from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { signOut } from "@/actions";
+import { useCookies } from "next-client-cookies";
 
 import { cn } from "@/lib/utils";
 
@@ -17,6 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
+  const cookies = useCookies();
   return (
     <div
       className={cn(
@@ -72,6 +75,12 @@ export function Sidebar({ className }: SidebarProps) {
                 <Button
                   variant="destructiveOutline"
                   className="h-[55px] w-full justify-between"
+                  onClick={() => {
+                    signOut();
+                    cookies.remove("accessToken");
+                    cookies.remove("email");
+                    router.push("/auth/sign-in");
+                  }}
                 >
                   <Image
                     src="/logout.svg"

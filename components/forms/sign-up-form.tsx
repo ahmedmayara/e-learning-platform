@@ -117,6 +117,8 @@ export function SignUpForm() {
     }
   };
 
+  console.log(signUpForm.getValues());
+
   return (
     <>
       <Form {...signUpForm}>
@@ -132,12 +134,10 @@ export function SignUpForm() {
                 name="roles"
                 render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <div className="flex flex-col items-end">
-                      <FormLabel>الدور</FormLabel>
-                      <FormDescription>
-                        اختر الدور الذي يصفك بشكل أفضل
-                      </FormDescription>
-                    </div>
+                    <FormLabel>الدور</FormLabel>
+                    <FormDescription>
+                      اختر الدور الذي يصفك بشكل أفضل
+                    </FormDescription>
                     <FormMessage />
                     <RadioGroup
                       onValueChange={field.onChange}

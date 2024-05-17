@@ -23,10 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 interface AxiosSignInResponse {
-  id: {
-    timestamp: number;
-    date: string;
-  };
+  id: string;
   email: string;
   accessToken: string;
   tokenType: string;
@@ -55,12 +52,24 @@ export function SignInForm() {
           values,
         )
         .then((res) => {
+          console.log(res.data);
           if (res.data.roles.includes(ERole.ROLE_PARENT)) {
             cookies.set("accessToken", res.data.accessToken, {
               secure: true,
             });
             cookies.set("email", res.data.email, { secure: true });
             router.push("/auth/profile");
+          } else {
+            if (res.data.roles.includes(ERole.ROLE_TEACHER)) {
+              cookies.set("accessToken", res.data.accessToken, {
+                secure: true,
+              });
+              cookies.set("email", res.data.email, { secure: true });
+              cookies.set("teacherId", res.data.id.toString(), {
+                secure: true,
+              });
+              router.push("/teacher/courses");
+            }
           }
         });
     } catch (error: any) {

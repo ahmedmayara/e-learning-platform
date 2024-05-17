@@ -34,7 +34,14 @@ export interface Parent {
 
 export interface Teacher {
   id: string;
-  user: User;
+  firstname: string;
+  lastname: string;
+  email: string;
+  date_of_birth: string;
+  password: string;
+  roles: Role[];
+  verified: boolean;
+  subjects: string[];
 }
 
 export interface Quiz {
@@ -46,13 +53,13 @@ export interface Quiz {
 
 export interface Course {
   id: string;
-  videoUrl: string;
-  pdfUrl: string;
+  video_url: string;
+  pdf_url: string;
   name: string;
   term: number;
+  teacher: Teacher;
   schoolLevel: string;
   subject: string;
-  dateOfCreation: string;
-  teacher: Teacher;
+  date_of_addition: string;
   quizzes?: Quiz[];
 }
