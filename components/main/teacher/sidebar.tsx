@@ -5,7 +5,12 @@ import React from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { HomeIcon } from "@radix-ui/react-icons";
-import { BookMarkedIcon, RadioIcon, SettingsIcon } from "lucide-react";
+import {
+  BookMarkedIcon,
+  RadioIcon,
+  SettingsIcon,
+  TestTubeIcon,
+} from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 
@@ -34,6 +39,12 @@ export function Sidebar() {
           icon={BookMarkedIcon}
           onClick={() => router.push("/teacher/courses")}
           isActive={pathname === "/teacher/courses"}
+        />
+        <SidebarButton
+          label="الاختبارات"
+          icon={TestTubeIcon}
+          onClick={() => router.push("/teacher/tests")}
+          isActive={pathname === "/teacher/tests"}
         />
         <SidebarButton
           label="الاجتماعات المباشرة"

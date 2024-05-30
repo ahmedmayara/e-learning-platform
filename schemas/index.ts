@@ -106,7 +106,79 @@ export const AddCourseSchema = z.object({
   }),
 });
 
+export const AddTestSchema = z.object({
+  name: z
+    .string({
+      required_error: "الاسم مطلوب",
+      invalid_type_error: "يجب أن يكون الاسم نص",
+    })
+    .min(2, { message: "يجب أن يحتوي الاسم على حرفين على الأقل" }),
+  pdf_url: z.string({
+    required_error: "رابط الملف مطلوب",
+    invalid_type_error: "يجب أن يكون رابط الملف نص",
+  }),
+  description: z
+    .string({
+      required_error: "الوصف مطلوب",
+      invalid_type_error: "يجب أن يكون الوصف نص",
+    })
+    .min(2, { message: "يجب أن يحتوي الوصف على حرفين على الأقل" }),
+  schoolLevel: z.string({
+    required_error: "المستوى الدراسي مطلوب",
+    invalid_type_error: "يجب أن يكون المستوى الدراسي نص",
+  }),
+  difficulty: z.string({
+    required_error: "الصعوبة مطلوبة",
+    invalid_type_error: "يجب أن تكون الصعوبة رقم",
+  }),
+  subject: z.string({
+    required_error: "المادة مطلوبة",
+    invalid_type_error: "يجب أن تكون المادة نص",
+  }),
+  duration: z.string({
+    required_error: "المدة مطلوبة",
+    invalid_type_error: "يجب أن تكون المدة رقم",
+  }),
+  correction_pdf_url: z.string({
+    required_error: "رابط الملف مطلوب",
+    invalid_type_error: "يجب أن يكون رابط الملف نص",
+  }),
+  term: z.string({
+    required_error: "الفصل مطلوب",
+    invalid_type_error: "يجب أن يكون الفصل نص",
+  }),
+});
+
+export const AddGroupClassSchema = z.object({
+  subject: z.string({
+    required_error: "المادة مطلوبة",
+    invalid_type_error: "يجب أن تكون المادة نص",
+  }),
+  teacherId: z.string({
+    required_error: "المعلم مطلوب",
+    invalid_type_error: "يجب أن يكون المعلم نص",
+  }),
+  schoolLevel: z.string({
+    required_error: "المستوى الدراسي مطلوب",
+    invalid_type_error: "يجب أن يكون المستوى الدراسي نص",
+  }),
+  dayId: z.string({
+    required_error: "اليوم مطلوب",
+    invalid_type_error: "يجب أن يكون اليوم نص",
+  }),
+  startTime: z.string({
+    required_error: "وقت البدء مطلوب",
+    invalid_type_error: "يجب أن يكون وقت البدء نص",
+  }),
+  endTime: z.string({
+    required_error: "وقت الانتهاء مطلوب",
+    invalid_type_error: "يجب أن يكون وقت الانتهاء نص",
+  }),
+});
+
 export type SignInValues = z.infer<typeof SignInSchema>;
 export type SignUpValues = z.infer<typeof SignUpSchema>;
 export type AddChildValues = z.infer<typeof AddChildSchema>;
 export type AddCourseValues = z.infer<typeof AddCourseSchema>;
+export type AddTestValues = z.infer<typeof AddTestSchema>;
+export type AddGroupClassValues = z.infer<typeof AddGroupClassSchema>;

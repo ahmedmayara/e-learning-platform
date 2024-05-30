@@ -63,3 +63,27 @@ export interface Course {
   date_of_addition: string;
   quizzes?: Quiz[];
 }
+
+export interface Test {
+  id: string;
+  name: string;
+  pdf_url: string;
+  description: string;
+  schoolLevel: string;
+  difficulty: number;
+  subject: string;
+  duration: number;
+  teacher: Teacher;
+  correction_pdf_url: string;
+}
+
+export interface GroupClass {
+  id: string;
+  teacher_id: string;
+  subject: string;
+  school_level: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  students: number[];
+}
