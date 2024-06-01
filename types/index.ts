@@ -45,10 +45,13 @@ export interface Teacher {
 }
 
 export interface Quiz {
-  id: string;
+  
   question: string;
-  options: string[];
-  correctAnswer: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
+  correct_option: string;
 }
 
 export interface Course {

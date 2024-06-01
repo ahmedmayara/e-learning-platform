@@ -4,7 +4,7 @@ import React from "react";
 
 import { useRouter } from "next/navigation";
 import { AddCourseSchema, AddCourseValues } from "@/schemas";
-import { Teacher } from "@/types";
+import { Quiz, Teacher } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { QuizModel } from "./addquizmodal";
+
 interface AddCourseProps {
   teacher: Teacher;
 }
@@ -36,6 +38,7 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [quizarreay, setQuizarreay] = React.useState<Quiz[]>([]);
 
   const addCourseForm = useForm<AddCourseValues>({
     resolver: zodResolver(AddCourseSchema),
@@ -47,15 +50,20 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
       subject: "",
       term: "",
       date_of_addition: new Date().toISOString(),
+      quizzes: quizarreay,
     },
   });
+  const API_URL = "http://localhost:8080/api/courses";
 
   const onSubmit = async (values: AddCourseValues) => {
+    values.quizzes = quizarreay;
+    console.log(values);
     try {
       await axios
-        .post("http://localhost:8080/api/courses", {
+        .post(API_URL, {
           ...values,
           teacher: teacher,
+          quizzes: quizarreay,
         })
         .then((res) => {
           console.log(res.data);
@@ -70,6 +78,9 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
       console.error(error);
       setError("حدث خطأ ما");
     }
+  };
+  const handelAddnewquiztothequizarreay = (quiz: Quiz[]) => {
+    setQuizarreay([...quizarreay, ...quiz]);
   };
 
   return (
@@ -205,7 +216,12 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                 </div>
               )}
             </form>
+            <QuizModel
+              value={quizarreay}
+              onchange={handelAddnewquiztothequizarreay}
+            />
           </Form>
+          <Button onClick={() => console.log(quizarreay)}>log</Button>
         </div>
       </DialogContent>
     </Dialog>

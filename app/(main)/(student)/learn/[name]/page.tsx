@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 
 import Image from "next/image";
@@ -9,6 +10,7 @@ import { DownloadIcon, EyeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import Tryquiz from "@/components/tryquiz";
 
 interface LearnPageProps {
   params: {
@@ -58,6 +60,8 @@ interface CourseCardProps {
 }
 
 function CourseCard({ course }: CourseCardProps) {
+
+  const extractedquizes = course.quizzes;
   return (
     <Card className="w-full max-w-sm rounded-xl border">
       <div className="flex h-[200px] items-center justify-center rounded-t-xl bg-muted">
@@ -84,6 +88,7 @@ function CourseCard({ course }: CourseCardProps) {
                 </Link>
               </Button>
             )}
+            {course.quizzes?.length! > 0 && <Tryquiz extractedquizes={extractedquizes!} />}
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="font-medium">
