@@ -104,36 +104,37 @@ export const AddCourseSchema = z.object({
     required_error: "تاريخ الإضافة مطلوب",
     invalid_type_error: "يجب أن يكون تاريخ الإضافة نص",
   }),
-  quizzes: z.optional(z.array(z.object({
-    question:z.string({
-      required_error: "السؤال مطلوب",
-      invalid_type_error: "يجب أن يكون السؤال نص",
-    }),
-    correct_option:z.string({
-      required_error: "الإجابة الصحيحة مطلوبة",
-      invalid_type_error: "يجب أن تكون الإجابة الصحيحة نص",
-    }),
-    option1:z.string({
-      required_error: "الخيار الأول مطلوب",
-      invalid_type_error: "يجب أن يكون الخيار الأول نص",
-    }),
-    option2:z.string({
-      required_error: "الخيار الثاني مطلوب",
-      invalid_type_error: "يجب أن يكون الخيار الثاني نص",
-    }),
-    option3:z.string({
-      required_error: "الخيار الثالث مطلوب",
-      invalid_type_error: "يجب أن يكون الخيار الثالث نص",
-    }),
-    option4:z.string({
-      required_error: "الخيار الثالث مطلوب",
-      invalid_type_error: "يجب أن يكون الخيار الثالث نص",
-    }),
-  }))),
-
-
-
-  });
+  quizzes: z.optional(
+    z.array(
+      z.object({
+        question: z.string({
+          required_error: "السؤال مطلوب",
+          invalid_type_error: "يجب أن يكون السؤال نص",
+        }),
+        correct_option: z.string({
+          required_error: "الإجابة الصحيحة مطلوبة",
+          invalid_type_error: "يجب أن تكون الإجابة الصحيحة نص",
+        }),
+        option1: z.string({
+          required_error: "الخيار الأول مطلوب",
+          invalid_type_error: "يجب أن يكون الخيار الأول نص",
+        }),
+        option2: z.string({
+          required_error: "الخيار الثاني مطلوب",
+          invalid_type_error: "يجب أن يكون الخيار الثاني نص",
+        }),
+        option3: z.string({
+          required_error: "الخيار الثالث مطلوب",
+          invalid_type_error: "يجب أن يكون الخيار الثالث نص",
+        }),
+        option4: z.string({
+          required_error: "الخيار الثالث مطلوب",
+          invalid_type_error: "يجب أن يكون الخيار الثالث نص",
+        }),
+      }),
+    ),
+  ),
+});
 
 export const AddTestSchema = z.object({
   name: z
@@ -204,10 +205,24 @@ export const AddGroupClassSchema = z.object({
     invalid_type_error: "يجب أن يكون وقت الانتهاء نص",
   }),
 });
+export const addLiveMeetingSchema = z.object({
+  name: z.string({
+    required_error: "الاسم مطلوب",
+    invalid_type_error: "يجب ان يكون الاسم نص",
+  }),
+  description: z.string({
+    required_error: "الوصف مطلوب",
+    invalid_type_error: "يجب ان يكون الوصف نص",
+  }),
+  dateTime: z.string({
+    required_error: "الوقت مطلوب",
+    invalid_type_error: "يجب ان يكون الوقت نص",
+  }),
+});
 
 export type SignInValues = z.infer<typeof SignInSchema>;
 export type SignUpValues = z.infer<typeof SignUpSchema>;
 export type AddChildValues = z.infer<typeof AddChildSchema>;
 export type AddCourseValues = z.infer<typeof AddCourseSchema>;
 export type AddTestValues = z.infer<typeof AddTestSchema>;
-export type AddGroupClassValues = z.infer<typeof AddGroupClassSchema>;
+export type addLiveMeetingValues = z.infer<typeof addLiveMeetingSchema>;

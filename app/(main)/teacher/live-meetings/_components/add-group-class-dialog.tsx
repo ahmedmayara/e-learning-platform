@@ -3,7 +3,7 @@
 import React from "react";
 
 import { useRouter } from "next/navigation";
-import { AddGroupClassSchema, AddGroupClassValues } from "@/schemas";
+import { addLiveMeetingSchema, addLiveMeetingValues } from "@/schemas";
 import { Teacher } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -37,18 +37,30 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
   const [success, setSuccess] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
-  const addGroupClassFrom = useForm<AddGroupClassValues>({
-    resolver: zodResolver(AddGroupClassSchema),
+  const AddliveMeetingForm = useForm<addLiveMeetingValues>({
+    resolver: zodResolver(addLiveMeetingSchema),
     defaultValues: {
-      teacherId: teacher.id,
+      name: "",
+      description: "",
+      dateTime: "",
     },
   });
 
-  const onSubmit = async (values: AddGroupClassValues) => {
+  const onSubmit = async (values: addLiveMeetingValues) => {
     try {
+      const parseDate = new Date(values.dateTime);
+      console.log(parseDate);
+      if (AddliveMeetingForm.formState.errors) {
+        setError("الرجاء ملء جميع الحقول");
+        return;
+      }
+
       await axios
-        .post("http://localhost:8080/group-classes", {
-          ...values,
+        .post("http://localhost:8080/meetings", {
+          name: values.name,
+          description: values.description,
+          dateTime: parseDate,
+          teacher: teacher,
         })
         .then((res) => {
           console.log(res.data);
@@ -83,14 +95,14 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
         </DialogHeader>
 
         <div className="mt-4">
-          <Form {...addGroupClassFrom}>
+          <Form {...AddliveMeetingForm}>
             <form
-              onSubmit={addGroupClassFrom.handleSubmit(onSubmit)}
+              onSubmit={AddliveMeetingForm.handleSubmit(onSubmit)}
               className="grid gap-4"
             >
               <FormField
-                control={addGroupClassFrom.control}
-                name="schoolLevel"
+                control={AddliveMeetingForm.control}
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
@@ -106,8 +118,8 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
               />
 
               <FormField
-                control={addGroupClassFrom.control}
-                name="subject"
+                control={AddliveMeetingForm.control}
+                name="description"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
@@ -123,8 +135,8 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
               />
 
               <FormField
-                control={addGroupClassFrom.control}
-                name="dayId"
+                control={AddliveMeetingForm.control}
+                name="dateTime"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
@@ -132,41 +144,7 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
                       <FormLabel>اليوم</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={addGroupClassFrom.control}
-                name="startTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center">
-                      <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>الوقت</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="time" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={addGroupClassFrom.control}
-                name="endTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center">
-                      <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>الوقت</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="time" {...field} />
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

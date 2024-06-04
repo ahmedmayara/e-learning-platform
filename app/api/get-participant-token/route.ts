@@ -33,6 +33,6 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY4NjE2NzEsImlzcyI6IkFQSWlNb3JSTFlYb041NyIsIm5iZiI6MTcxNTk2MTY3MSwic3ViIjoiQWhtZWRNYXlhcmEiLCJ2aWRlbyI6eyJjYW5QdWJsaXNoIjp0cnVlLCJjYW5QdWJsaXNoRGF0YSI6dHJ1ZSwiY2FuU3Vic2NyaWJlIjp0cnVlLCJyb29tIjoicXVpY2tzdGFydC1yb29tIiwicm9vbUpvaW4iOnRydWV9fQ.5IjJ-wjMgEkuLFqWZXH7fS-nl0NIu9-Ce8WiE5ZaflY",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTc1NTA1NzAsImlzcyI6IkFQSWl5ZmVadmtqbmRUUiIsIm5iZiI6MTcxNzUyODk3MCwic3ViIjoidGVzdHR0IiwidmlkZW8iOnsiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuUHVibGlzaERhdGEiOnRydWUsImNhblN1YnNjcmliZSI6dHJ1ZSwicm9vbSI6InR0dHRlc3R0Iiwicm9vbUpvaW4iOnRydWV9fQ.pDQ5-0_uo1s2zHbWJfOixoa9POsPpC-w6IL2u9NB0HU",
   });
 }

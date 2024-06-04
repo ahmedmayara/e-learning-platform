@@ -45,7 +45,7 @@ export interface Teacher {
 }
 
 export interface Quiz {
-  
+
   question: string;
   option1: string;
   option2: string;
@@ -89,4 +89,12 @@ export interface GroupClass {
   start_time: string;
   end_time: string;
   students: number[];
+}
+
+export interface LiveMeeting {
+  id: string;
+  name: string;
+  descreption: string;
+  dateTime: string;
+  teacher: Teacher;
 }
