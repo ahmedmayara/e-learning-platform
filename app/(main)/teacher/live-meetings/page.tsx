@@ -20,6 +20,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AddGroupClassDialog } from "./_components/add-group-class-dialog";
 import DeleteLive from "./_components/deletelivemeeting";
 import StartNewMeeting from "./_components/startmeeting";
+import { UpdateGroupClass } from "./_components/updatemeeting";
 
 const getTeacherByEmail = async (
   email: string | undefined,
@@ -111,9 +112,7 @@ export default async function TeacherLiveMeetingsPage() {
             <div className="flex flex-row items-center space-x-4">
               <StartNewMeeting id={meeting.id} />
 
-              <Button variant="secondary">
-                <Link href="#">تعديل</Link>
-              </Button>
+              <UpdateGroupClass meeting={meeting} />
               <DeleteLive id={meeting.id} />
             </div>
           </CardContent>

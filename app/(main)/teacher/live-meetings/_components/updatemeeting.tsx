@@ -4,7 +4,7 @@ import React from "react";
 
 import { useRouter } from "next/navigation";
 import { addLiveMeetingSchema, addLiveMeetingValues } from "@/schemas";
-import { Teacher } from "@/types";
+import { LiveMeeting, Teacher } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -29,10 +29,10 @@ import {
 import { Input } from "@/components/ui/input";
 
 interface AddGroupClassProps {
-  teacher: Teacher;
+  meeting: LiveMeeting;
 }
 
-export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
+export function UpdateGroupClass({ meeting }: AddGroupClassProps) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -40,9 +40,9 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
   const AddliveMeetingForm = useForm<addLiveMeetingValues>({
     resolver: zodResolver(addLiveMeetingSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      dateTime: "",
+      name: meeting.name,
+      description: meeting.description,
+      dateTime: new Date(meeting.dateTime).toISOString().split("T")[0],
     },
   });
 
@@ -52,11 +52,11 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
       console.log(parseDate);
 
       await axios
-        .post("http://localhost:8080/meetings", {
+        .put("http://localhost:8080/meetings/" + meeting.id, {
           name: values.name,
           description: values.description,
           dateTime: parseDate,
-          teacher: teacher,
+          teacher: meeting.teacher,
         })
         .then((res) => {
           console.log(res.data);
@@ -72,13 +72,12 @@ export function AddGroupClassDialog({ teacher }: AddGroupClassProps) {
       setError("حدث خطأ ما");
     }
   };
+  console.log(AddliveMeetingForm.formState.errors);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="primaryOutline">
-          <span>إضافة درس جماعي</span>
-        </Button>
+        <Button variant="secondary">تعديل</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,6 +1,8 @@
 import React from "react";
 
+import Link from "next/link";
 import { ERole, Teacher } from "@/types";
+import axios from "axios";
 
 import {
   Table,
@@ -10,37 +12,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import ActivateTeacher from "@/app/(main)/(admin)/admin/teachers/activateteacher";
 
 import { Button } from "./ui/button";
 
-const teachers: Teacher[] = [
-  {
-    id: "1",
-    user: {
-      id: "1",
-      firstName: "محمد",
-      lastName: "علي",
-      email: "mohamed@example.com",
-      dateOfBirth: "1990-01-01",
-      password: "123456",
-      roles: [{ id: "1", name: ERole.ROLE_TEACHER }],
-    },
-  },
-  {
-    id: "2",
-    user: {
-      id: "2",
-      firstName: "أحمد",
-      lastName: "محمود",
-      email: "ahmed@example.com",
-      dateOfBirth: "1990-01-01",
-      password: "123456",
-      roles: [{ id: "2", name: ERole.ROLE_TEACHER }],
-    },
-  },
-];
+const getAllteachers = async () => {
+  return axios
+    .get("http://localhost:8080/api/teachers")
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+};
 
-export function TeachersTable() {
+const TeachersTable = async () => {
+  const teachers = await getAllteachers();
+
+  const filteredTeachers = teachers.filter((teacher) => {
+    return teacher.roles.some((role) => role.name === ERole.ROLE_TEACHER);
+  });
+
   return (
     <Table>
       <TableHeader>
@@ -48,28 +42,38 @@ export function TeachersTable() {
           <TableHead>الاسم</TableHead>
           <TableHead>البريد الإلكتروني</TableHead>
           <TableHead>الدور</TableHead>
+          <TableHead>Document</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>الإجراءات</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {teachers.map((teacher) => (
+        {filteredTeachers.map((teacher) => (
           <TableRow key={teacher.id}>
             <TableCell>
-              {teacher.user.firstName} {teacher.user.lastName}
+              {teacher?.firstname} {teacher?.lastname}
             </TableCell>
-            <TableCell>{teacher.user.email}</TableCell>
+            <TableCell>{teacher?.email}</TableCell>
             <TableCell>
-              {teacher.user.roles.map((role) => {
+              {teacher?.roles.map((role) => {
                 if (role.name === ERole.ROLE_TEACHER) {
                   return "معلم";
                 }
               })}
             </TableCell>
             <TableCell>
+              {teacher.teacherverification ? (
+                <Link href={teacher.teacherverification}>عرض</Link>
+              ) : (
+                "لا يوجد"
+              )}
+            </TableCell>
+            <TableCell>
+              {teacher.verified ? "تم التحقق" : "لم يتم التحقق"}
+            </TableCell>
+            <TableCell>
               <div className="flex items-center gap-2">
-                <Button variant="secondary" size="sm">
-                  تحقق
-                </Button>
+                <ActivateTeacher id={teacher.id} />
                 <Button variant="destructive" size="sm">
                   حذف
                 </Button>
@@ -80,4 +84,6 @@ export function TeachersTable() {
       </TableBody>
     </Table>
   );
-}
+};
+
+export default TeachersTable;

@@ -30,11 +30,9 @@ const getTeacherTests = async (
   return axios
     .get("http://localhost:8080/api/tests/teacher/" + teacherId)
     .then((res) => {
-      console.log(res.data);
       return res.data;
     })
     .catch((error) => {
-      console.error(error);
       throw error;
     });
 };
@@ -48,7 +46,6 @@ const getTeacherByEmail = async (
       return res.data;
     })
     .catch((error) => {
-      console.error(error);
       throw error;
     });
 };
@@ -58,9 +55,7 @@ export default async function TeacherTestsPage() {
   const teacherEmail = cookies().get("email")?.value;
   const teacher = await getTeacherByEmail(teacherEmail);
   const tests = await getTeacherTests(teacherId);
-  console.log(tests);
-  console.log(teacher);
-  console.log(teacherId);
+
   return (
     <div className="flex flex-col gap-4">
       <Breadcrumb>

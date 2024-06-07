@@ -4,7 +4,7 @@ import React from "react";
 
 import { useRouter } from "next/navigation";
 import { AddCourseSchema, AddCourseValues } from "@/schemas";
-import { Quiz, Teacher } from "@/types";
+import { Course, Quiz } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -33,43 +33,45 @@ import { QuizModel } from "./addquizmodal";
 import { UploadcoursePdf } from "./uploadpdf";
 
 interface AddCourseProps {
-  teacher: Teacher;
+  course: Course;
 }
 
-export function AddCourseDialog({ teacher }: AddCourseProps) {
+export function UpdateCourseDialog({ course }: AddCourseProps) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [quizarreay, setQuizarreay] = React.useState<Quiz[]>([]);
+  const [quizarreay, setQuizarreay] = React.useState<Quiz[]>();
   const [file, setFile] = React.useState<File | null>(null);
 
   const addCourseForm = useForm<AddCourseValues>({
     resolver: zodResolver(AddCourseSchema),
     defaultValues: {
-      video_url: "",
-      pdf_url: "",
-      name: "",
-      schoolLevel: "",
-      subject: "",
-      term: "",
+      video_url: course.video_url,
+      pdf_url: course.pdf_url,
+      name: course.name,
+      schoolLevel: course.schoolLevel,
+      subject: course.subject,
+      term: String(course.term),
       date_of_addition: new Date().toISOString(),
-      quizzes: quizarreay,
+      quizzes: course.quizzes || [],
     },
   });
-  const API_URL = "http://localhost:8080/api/courses";
 
-  const onSubmit = async (values: AddCourseValues) => {
-    values.quizzes = quizarreay;
-    //@ts-ignore
-    values.pdf_url = file?.url;
+  const API_URL = `http://localhost:8080/api/courses/${course.id}`;
+
+  const onSubmit = async (values: any) => {
+    console.log("values", values);
+    values.quizzes = course.quizzes ? course.quizzes : [];
+    // @ts-ignore
+    values.pdf_url = file?.url || values.pdf_url;
     console.log(values);
 
     try {
       await axios
-        .post(API_URL, {
+        .put(API_URL, {
           ...values,
-          teacher: teacher,
-          quizzes: quizarreay,
+          teacher: course.teacher,
+          quizzes: course.quizzes,
         })
         .then((res) => {
           console.log(res.data);
@@ -85,14 +87,19 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
       setError("حدث خطأ ما");
     }
   };
-  const handelAddnewquiztothequizarreay = (quiz: Quiz[]) => {
-    setQuizarreay([...quizarreay, ...quiz]);
-  };
+
+  console.log(addCourseForm.formState.errors);
+
+  //   const handelAddnewquiztothequizarreay = (quiz: Quiz[]) => {
+  //     setQuizarreay([...quizarreay, ...quiz]);
+  //   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="primaryOutline">إضافة درس جديد</Button>
+        <Button variant="indigoOutline" size="sm">
+          تعديل
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -116,7 +123,12 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>رابط الفيديو</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,7 +146,12 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>الاسم</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -151,7 +168,12 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>المرحلة</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,7 +190,12 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>الفصل</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -185,14 +212,19 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>المادة</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type="submit" variant="primary">
+              <Button variant="primary" type="submit">
                 إضافة
               </Button>
 
@@ -208,10 +240,10 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                 </div>
               )}
             </form>
-            <QuizModel
+            {/* <QuizModel
               value={quizarreay}
               onchange={handelAddnewquiztothequizarreay}
-            />
+            /> */}
           </Form>
         </div>
       </DialogContent>

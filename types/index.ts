@@ -78,6 +78,7 @@ export interface Test {
   duration: number;
   teacher: Teacher;
   correction_pdf_url: string;
+  term:string
 }
 
 export interface GroupClass {
@@ -94,7 +95,7 @@ export interface GroupClass {
 export interface LiveMeeting {
   id: string;
   name: string;
-  descreption: string;
+  description: string;
   dateTime: string;
   teacher: Teacher;
 }

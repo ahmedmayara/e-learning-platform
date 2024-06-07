@@ -1,39 +1,43 @@
 import React from "react";
 
 import Image from "next/image";
+import Link from "next/link";
+import { Test } from "@/types";
 
 import { Button } from "@/components/ui/button";
 
 interface TestCardProps {
-  title: string;
-  description: string;
-  image: string;
+  test: Test;
 }
 
-export function TestCard({ title, description, image }: TestCardProps) {
+export function TestCard({ test }: TestCardProps) {
   return (
     <div className="flex flex-col rounded-xl border">
-      <a href="#">
-        <Image
-          src={image}
-          alt={title}
-          width={1000}
-          height={1000}
-          className="h-[300px] w-full rounded-t-xl object-cover"
-        />
-      </a>
+      <div className="flex h-[200px] items-center justify-center rounded-t-xl bg-muted">
+        <Image alt="Course thumbnail" width="64" height="64" src="/pdf.svg" />
+      </div>
       <div className="flex flex-col space-y-4 p-6">
         <a href="#">
-          <h5 className="text-2xl font-bold text-foreground">{title}</h5>
+          <h5 className="text-2xl font-bold text-foreground">{test.name}</h5>
         </a>
-        <p className="font-normal text-muted-foreground">{description}</p>
+        <p className="font-normal text-muted-foreground">{test.description}</p>
+        <p className="font-normal text-muted-foreground">{test.subject}</p>
+        <p className="font-normal text-muted-foreground">{test.duration}</p>
         <div className="mt-auto flex w-full items-center space-x-4 pt-2.5">
-          <Button variant="secondary" className="w-full">
-            عرض الحلول
-          </Button>
-          <Button variant="primaryOutline" className="w-full">
-            إجراء الاختبار
-          </Button>
+          {test.correction_pdf_url && test.pdf_url && (
+            <>
+              <Button variant="secondary" className="w-full" asChild>
+                <Link href={test.correction_pdf_url} target="_blank">
+                  عرض الحلول
+                </Link>
+              </Button>
+              <Button variant="secondary" className="w-full" asChild>
+                <Link href={test.pdf_url} target="_blank">
+                  تحميل الامتحان
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

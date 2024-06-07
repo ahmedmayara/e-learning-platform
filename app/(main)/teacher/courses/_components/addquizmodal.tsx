@@ -57,7 +57,7 @@ export const QuizModel = ({ value, onchange }: ConfirmModelProps) => {
     <>
       <AlertDialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
         <AlertDialogTrigger className="flex items-center gap-x-2" asChild>
-          <Button className="rounded-full p-4" size="sm" variant="ghost">
+          <Button className="mt-4 w-full p-4" size="sm" variant="ghost">
             إضافة اختبار
           </Button>
         </AlertDialogTrigger>

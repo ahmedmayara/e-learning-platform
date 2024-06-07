@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { Quiz } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircleIcon, Crown, Timer } from "lucide-react";
+import { AlertCircleIcon, Crown, Dices, Timer } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -150,8 +150,8 @@ export const Tryquiz = ({ extractedquizes }: ConfirmModelProps) => {
           onClick={handleShowQuiz}
           asChild
         >
-          <Button className="rounded-full p-4" size="sm" variant="ghost">
-            <span>ابدأ الاختبار</span>
+          <Button variant="primary" size={"sm"}>
+            <Dices className="" />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent className="max-w-full md:max-w-[50%] ">

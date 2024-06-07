@@ -17,6 +17,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { UpdateCourseDialog } from "./updatecoursedialog";
+
 interface CoursesTableProps {
   courses: Course[];
 }
@@ -80,9 +82,7 @@ export function CoursesTable({ courses }: CoursesTableProps) {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-4">
-                <Button variant="indigoOutline" size="sm">
-                  تعديل
-                </Button>
+                <UpdateCourseDialog course={course} />
                 <Button
                   variant="destructiveOutline"
                   size="sm"

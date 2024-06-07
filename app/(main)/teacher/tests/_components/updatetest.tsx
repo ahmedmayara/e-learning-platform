@@ -3,9 +3,10 @@
 import React from "react";
 
 import { useRouter } from "next/navigation";
-import { AddCourseSchema, AddCourseValues } from "@/schemas";
-import { Quiz, Teacher } from "@/types";
+import { AddTestSchema, AddTestValues } from "@/schemas";
+import { Teacher, Test } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
@@ -27,111 +28,98 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-import { QuizModel } from "./addquizmodal";
-import { UploadcoursePdf } from "./uploadpdf";
+import { UploadcoursePdf } from "../../courses/_components/uploadpdf";
 
-interface AddCourseProps {
-  teacher: Teacher;
+interface props {
+  test: Test;
 }
 
-export function AddCourseDialog({ teacher }: AddCourseProps) {
+function UpdateTest({ test }: props) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [quizarreay, setQuizarreay] = React.useState<Quiz[]>([]);
   const [file, setFile] = React.useState<File | null>(null);
+  const [filecorrection, setFileCorrection] = React.useState<File | null>(null);
 
-  const addCourseForm = useForm<AddCourseValues>({
-    resolver: zodResolver(AddCourseSchema),
+  const addTestForm = useForm<AddTestValues>({
+    resolver: zodResolver(AddTestSchema),
     defaultValues: {
-      video_url: "",
-      pdf_url: "",
-      name: "",
-      schoolLevel: "",
-      subject: "",
-      term: "",
-      date_of_addition: new Date().toISOString(),
-      quizzes: quizarreay,
+      name: test.name,
+      pdf_url: test.pdf_url,
+      description: test.description,
+      schoolLevel: test.schoolLevel,
+      difficulty: String(test.difficulty),
+      subject: test.subject,
+      duration: String(test.duration),
+      term: test.term,
+      correction_pdf_url: test.correction_pdf_url,
     },
   });
-  const API_URL = "http://localhost:8080/api/courses";
 
-  const onSubmit = async (values: AddCourseValues) => {
-    values.quizzes = quizarreay;
-    //@ts-ignore
-    values.pdf_url = file?.url;
-    console.log(values);
-
+  const onSubmit = async (values: AddTestValues) => {
     try {
       await axios
-        .post(API_URL, {
+        .put("http://localhost:8080/api/tests/" + test.id, {
           ...values,
-          teacher: teacher,
-          quizzes: quizarreay,
+          teacher: test.teacher,
         })
         .then((res) => {
-          console.log(res.data);
-          setSuccess("تمت إضافة الدرس بنجاح");
+          setSuccess("تمت إضافة الاختبار بنجاح");
           router.refresh();
         })
         .catch((error) => {
-          console.error(error);
           setError("حدث خطأ ما");
         });
     } catch (error) {
-      console.error(error);
       setError("حدث خطأ ما");
     }
   };
-  const handelAddnewquiztothequizarreay = (quiz: Quiz[]) => {
-    setQuizarreay([...quizarreay, ...quiz]);
-  };
+  console.log(addTestForm.formState.errors);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="primaryOutline">إضافة درس جديد</Button>
+        <Button variant="primaryOutline">
+          {/* write ta3dil en arabe */}
+          تعديل
+        </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>إضافة درس جديد</DialogTitle>
-          <DialogDescription>قم بإدخال بيانات الدرس الجديد</DialogDescription>
-        </DialogHeader>
-
         <div className="mt-4">
-          <Form {...addCourseForm}>
+          <Form {...addTestForm}>
             <form
-              onSubmit={addCourseForm.handleSubmit(onSubmit)}
+              onSubmit={addTestForm.handleSubmit(onSubmit)}
               className="grid gap-4"
             >
               <FormField
-                control={addCourseForm.control}
-                name="video_url"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center">
-                      <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>رابط الفيديو</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Label className="text-right text-sm">رفع ملف الدرس</Label>
-              <UploadcoursePdf file={file} onchange={(file) => setFile(file)} />
-              <FormField
-                control={addCourseForm.control}
+                control={addTestForm.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
                       <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>الاسم</FormLabel>
+                      <FormLabel>اسم الاختبار</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Label>رفع ملف الاختبار</Label>
+
+              <UploadcoursePdf file={file} onchange={(file) => setFile(file)} />
+
+              <FormField
+                control={addTestForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center">
+                      <div className="mr-auto inline-block text-sm"></div>
+                      <FormLabel>الوصف</FormLabel>
                     </div>
                     <FormControl>
                       <Input type="text" {...field} />
@@ -142,13 +130,13 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
               />
 
               <FormField
-                control={addCourseForm.control}
+                control={addTestForm.control}
                 name="schoolLevel"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
                       <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>المرحلة</FormLabel>
+                      <FormLabel>المستوى الدراسي</FormLabel>
                     </div>
                     <FormControl>
                       <Input type="text" {...field} />
@@ -159,7 +147,7 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
               />
 
               <FormField
-                control={addCourseForm.control}
+                control={addTestForm.control}
                 name="term"
                 render={({ field }) => (
                   <FormItem>
@@ -176,7 +164,24 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
               />
 
               <FormField
-                control={addCourseForm.control}
+                control={addTestForm.control}
+                name="difficulty"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center">
+                      <div className="mr-auto inline-block text-sm"></div>
+                      <FormLabel>الصعوبة</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={addTestForm.control}
                 name="subject"
                 render={({ field }) => (
                   <FormItem>
@@ -192,9 +197,34 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                 )}
               />
 
-              <Button type="submit" variant="primary">
-                إضافة
-              </Button>
+              <FormField
+                control={addTestForm.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center">
+                      <div className="mr-auto inline-block text-sm"></div>
+                      <FormLabel>المدة</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Label>رابط ملف التصحيح</Label>
+
+              <UploadcoursePdf
+                file={filecorrection}
+                onchange={(file) => setFileCorrection(file)}
+              />
+
+              <div className="flex justify-end">
+                <Button type="submit" variant="primary">
+                  إضافة
+                </Button>
+              </div>
 
               {error && (
                 <div className="flex justify-end rounded-xl border-e-4 border-red-600 bg-red-200 p-4 px-6 text-sm font-medium text-red-600">
@@ -208,13 +238,11 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                 </div>
               )}
             </form>
-            <QuizModel
-              value={quizarreay}
-              onchange={handelAddnewquiztothequizarreay}
-            />
           </Form>
         </div>
       </DialogContent>
     </Dialog>
   );
 }
+
+export default UpdateTest;

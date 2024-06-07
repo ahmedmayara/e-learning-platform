@@ -72,11 +72,7 @@ export function ProfileClient({ parent }: ProfileClientProps) {
         <>
           {parent.children.length > 0 &&
             parent.children.map((child) => (
-              <ChildProfileBox
-                key={child.id}
-                child={child}
-                href={`/learn/${child.id}`}
-              />
+              <ChildProfileBox key={child.id} child={child} href={`/learn`} />
             ))}
           {parent.children.length === 0 || parent.children.length < 5 ? (
             <div className="flex items-center justify-center">

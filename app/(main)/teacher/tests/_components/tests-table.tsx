@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import UpdateTest from "./updatetest";
 
 interface TestsTableProps {
   tests: Test[];
@@ -24,11 +25,9 @@ const deleteTest = async (testId: string) => {
   return axios
     .delete("http://localhost:8080/api/tests/" + testId)
     .then((res) => {
-      console.log(res.data);
       return res.data;
     })
     .catch((error) => {
-      console.error(error);
       throw error;
     });
 };
@@ -63,9 +62,7 @@ export function TestsTable({ tests }: TestsTableProps) {
             </TableCell>
             <TableCell>
               <div className="flex items-center gap-4">
-                <Button variant="indigoOutline" size="sm">
-                  تعديل
-                </Button>
+                <UpdateTest test={test}/>
                 <Button
                   variant="destructiveOutline"
                   size="sm"

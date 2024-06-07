@@ -48,6 +48,7 @@ export const SignUpSchema = z.object({
   roles: z.array(z.nativeEnum(ERole), {
     required_error: "يجب اختيار دور واحد على الأقل",
   }),
+  teacherverification: z.optional(z.string()),
 });
 
 export const AddChildSchema = z.object({

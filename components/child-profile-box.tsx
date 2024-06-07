@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Student } from "@/types";
 
 interface ProfileBoxProps {
@@ -9,8 +12,14 @@ interface ProfileBoxProps {
 }
 
 export function ChildProfileBox({ child, href }: ProfileBoxProps) {
+  const router = useRouter();
+
+  const handelClick = () => {
+    router.push(href);
+  };
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" onClick={handelClick}>
       <Link
         href={href}
         className="flex h-36 w-36 cursor-pointer items-center justify-center rounded-lg border bg-muted"

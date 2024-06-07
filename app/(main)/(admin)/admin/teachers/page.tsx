@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TeachersTable } from "@/components/teachers-table";
+import TeachersTable from "@/components/teachers-table";
 
 export default function AdminTeachersPage() {
   return (

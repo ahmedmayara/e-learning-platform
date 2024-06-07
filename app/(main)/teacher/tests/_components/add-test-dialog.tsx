@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AddTestSchema, AddTestValues } from "@/schemas";
 import { Teacher, Test } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
@@ -28,6 +29,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { UploadcoursePdf } from "../../courses/_components/uploadpdf";
+
 interface AddTestProps {
   teacher: Teacher;
 }
@@ -36,6 +39,8 @@ export function AddTestDialog({ teacher }: AddTestProps) {
   const router = useRouter();
   const [success, setSuccess] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [file, setFile] = React.useState<File | null>(null);
+  const [filecorrection, setFileCorrection] = React.useState<File | null>(null);
 
   const addTestForm = useForm<AddTestValues>({
     resolver: zodResolver(AddTestSchema),
@@ -53,6 +58,11 @@ export function AddTestDialog({ teacher }: AddTestProps) {
   });
 
   const onSubmit = async (values: AddTestValues) => {
+    //@ts-ignore
+    values.pdf_url = file?.url;
+    //@ts-ignore
+    values.correction_pdf_url = filecorrection?.url;
+    console.log(values);
     try {
       await axios
         .post("http://localhost:8080/api/tests", {
@@ -60,19 +70,17 @@ export function AddTestDialog({ teacher }: AddTestProps) {
           teacher: teacher,
         })
         .then((res) => {
-          console.log(res.data);
           setSuccess("تمت إضافة الاختبار بنجاح");
           router.refresh();
         })
         .catch((error) => {
-          console.error(error);
           setError("حدث خطأ ما");
         });
     } catch (error) {
-      console.error(error);
       setError("حدث خطأ ما");
     }
   };
+  console.log(addTestForm.formState.errors);
 
   return (
     <Dialog>
@@ -109,23 +117,9 @@ export function AddTestDialog({ teacher }: AddTestProps) {
                   </FormItem>
                 )}
               />
+              <Label>رفع ملف الاختبار</Label>
 
-              <FormField
-                control={addTestForm.control}
-                name="pdf_url"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center">
-                      <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>رابط الملف</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="file" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <UploadcoursePdf file={file} onchange={(file) => setFile(file)} />
 
               <FormField
                 control={addTestForm.control}
@@ -228,22 +222,11 @@ export function AddTestDialog({ teacher }: AddTestProps) {
                   </FormItem>
                 )}
               />
+              <Label>رابط ملف التصحيح</Label>
 
-              <FormField
-                control={addTestForm.control}
-                name="correction_pdf_url"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center">
-                      <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>رابط ملف التصحيح</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="file" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <UploadcoursePdf
+                file={filecorrection}
+                onchange={(file) => setFileCorrection(file)}
               />
 
               <div className="flex justify-end">
