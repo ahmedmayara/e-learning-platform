@@ -15,6 +15,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -99,27 +100,38 @@ export function AddTestDialog({ teacher }: AddTestProps) {
           <Form {...addTestForm}>
             <form
               onSubmit={addTestForm.handleSubmit(onSubmit)}
-              className="grid gap-4"
+              className="grid grid-cols-2 gap-4"
+              id="addTestForm"
             >
-              <FormField
-                control={addTestForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center">
-                      <div className="mr-auto inline-block text-sm"></div>
-                      <FormLabel>اسم الاختبار</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Label>رفع ملف الاختبار</Label>
+              <div className="col-span-2 space-y-2">
+                <FormField
+                  control={addTestForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center">
+                        <div className="mr-auto inline-block text-sm"></div>
+                        <FormLabel>اسم الاختبار</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Input type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <UploadcoursePdf file={file} onchange={(file) => setFile(file)} />
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center">
+                    <div className="mr-auto inline-block text-sm"></div>
+                    <FormLabel>ملف الاختبار</FormLabel>
+                  </div>
+                  <UploadcoursePdf
+                    file={file}
+                    onchange={(file) => setFile(file)}
+                  />
+                </div>
+              </div>
 
               <FormField
                 control={addTestForm.control}
@@ -222,17 +234,16 @@ export function AddTestDialog({ teacher }: AddTestProps) {
                   </FormItem>
                 )}
               />
-              <Label>رابط ملف التصحيح</Label>
 
-              <UploadcoursePdf
-                file={filecorrection}
-                onchange={(file) => setFileCorrection(file)}
-              />
-
-              <div className="flex justify-end">
-                <Button type="submit" variant="primary">
-                  إضافة
-                </Button>
+              <div className="col-span-2 flex flex-col space-y-2">
+                <div className="flex items-center">
+                  <div className="mr-auto inline-block text-sm"></div>
+                  <FormLabel>ملف الإجابة</FormLabel>
+                </div>
+                <UploadcoursePdf
+                  file={filecorrection}
+                  onchange={(file) => setFileCorrection(file)}
+                />
               </div>
 
               {error && (
@@ -249,6 +260,13 @@ export function AddTestDialog({ teacher }: AddTestProps) {
             </form>
           </Form>
         </div>
+        <DialogFooter>
+          <div className="flex justify-end">
+            <Button type="submit" variant="primary" form="addTestForm">
+              إضافة
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

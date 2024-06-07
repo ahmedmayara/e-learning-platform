@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
-import { Cloud, Files, UploadCloud } from "lucide-react";
+import { Cloud, Files } from "lucide-react";
 import Dropzone from "react-dropzone";
 
 import { useUploadThing } from "@/lib/uploadthing";
@@ -21,7 +21,7 @@ const UploadDropzone = ({ file, onchange }: AccesTeacherProps) => {
   const [errormessage, setErrorMessage] = useState("");
   const { startUpload } = useUploadThing("coursePdf", {
     onUploadError(error) {
-      setErrorMessage("Failed to upload file");
+      setErrorMessage("فشل في تحميل الملف");
       setError(true);
       router.refresh();
     },
@@ -39,12 +39,6 @@ const UploadDropzone = ({ file, onchange }: AccesTeacherProps) => {
 
         const res = await startUpload(acceptedFiles);
         if (res) {
-          // await axios
-          //   .post("/api/teacherAccess", { fileUrl: res[0] })
-          //   .then(() => {
-          //     setProcessing(false);
-          //     toast.success("Your request has been submitted successfully ");
-          //   });
           console.log("file from" + res[0]);
           setIsCompleted(true);
 
@@ -71,10 +65,10 @@ const UploadDropzone = ({ file, onchange }: AccesTeacherProps) => {
                 <div className="flex flex-col items-center justify-center pb-6 pt-5">
                   <Cloud className="h-6 w-6 text-gray-500" />
                   <p className="text-sm text-gray-500">
-                    Drag and drop your file here or{" "}
-                    <span className="text-primary">browse</span>
+                    اسحب وأسقط ملفك هنا أو{" "}
+                    <span className="text-primary">تصفح</span>
                   </p>
-                  <p className="text-sm ">Note:Only pdf File are accepted</p>
+                  <p className="text-sm ">ملاحظة: يتم قبول ملفات pdf فقط</p>
                 </div>
                 {acceptedFiles && acceptedFiles[0] && !error ? (
                   <div className="outiline flex max-w-xs items-center overflow-hidden rounded-md bg-white outline-[1px] outline-primary">
@@ -92,7 +86,7 @@ const UploadDropzone = ({ file, onchange }: AccesTeacherProps) => {
                       <Files className="h-4 w-4 text-primary" />
                     </div>
                     <div className="h-full truncate px-3 py-2 text-sm text-red-500">
-                      Error uploading file
+                      خطأ في تحميل الملف
                     </div>
                   </div>
                 ) : null}
@@ -111,7 +105,7 @@ const UploadDropzone = ({ file, onchange }: AccesTeacherProps) => {
                         !error &&
                         !iscompleted && (
                           <div className=" flex gap-x-2">
-                            <p>Uploading</p>
+                            <p>جاري التحميل</p>
                           </div>
                         )}
                       {uploadProgress === 100 &&
@@ -119,7 +113,7 @@ const UploadDropzone = ({ file, onchange }: AccesTeacherProps) => {
                         !error &&
                         iscompleted && (
                           <div className=" flex gap-x-2">
-                            <p>Uploaded</p>
+                            <p>تم التحميل</p>
                           </div>
                         )}
                     </span>
@@ -142,18 +136,6 @@ export const UploadcoursePdf = ({ file, onchange }: AccesTeacherProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  // const onSubmit = async (values: any) => {
-  //   try {
-  //     setIsLoading(true);
-  //     await axios.post("/api/teacherAccess", values).then(() => {
-  //       toast.success("Your request has been submitted successfully ");
-  //     });
-  //   } catch (error) {
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   return (
     <Dialog
       open={isOpen}
@@ -174,7 +156,7 @@ export const UploadcoursePdf = ({ file, onchange }: AccesTeacherProps) => {
         <UploadDropzone file={file} onchange={onchange} />
         <div className="flex justify-end">
           <Button onClick={() => setIsOpen(false)} className="mr-2">
-            Cancel
+            إلغاء
           </Button>
         </div>
       </DialogContent>
