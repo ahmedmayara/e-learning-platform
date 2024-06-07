@@ -253,7 +253,7 @@ export function AddTestDialog({ teacher }: AddTestProps) {
               )}
 
               {success && (
-                <div className="flex justify-end rounded-xl border-e-4 border-green-600 bg-green-200 p-4 px-6 text-sm font-medium text-green-600">
+                <div className="col-span-2 flex justify-end rounded-xl border-e-4 border-green-600 bg-green-200 p-4 px-6 text-sm font-medium text-green-600">
                   {success}
                 </div>
               )}
