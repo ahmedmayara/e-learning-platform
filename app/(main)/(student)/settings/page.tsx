@@ -1,9 +1,8 @@
-
 import { cookies } from "next/headers";
 import axios from "axios";
 
-
-import Settingcomponenets from "./settingcompoenets";
+import Settingcomponenets from "../../teacher/settings/settingcompoenets";
+import ParentSetting from "./parentseeting";
 
 const TeacherSettingsPage = async () => {
   const email = cookies().get("email")?.value;
@@ -17,7 +16,7 @@ const TeacherSettingsPage = async () => {
 
   return (
     <>
-      <Settingcomponenets user={user.data} />
+      <ParentSetting user={user.data} />
     </>
   );
 };

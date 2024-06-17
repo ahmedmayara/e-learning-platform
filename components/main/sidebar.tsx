@@ -3,8 +3,14 @@
 import React from "react";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/actions";
+import {
+  BookMarkedIcon,
+  RadioIcon,
+  SettingsIcon,
+  TestTubeIcon,
+} from "lucide-react";
 import { useCookies } from "next-client-cookies";
 
 import { cn } from "@/lib/utils";
@@ -12,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { SidebarItem } from "./sidebar-item";
+import { SidebarButton } from "./teacher/sidebar-button";
 
 interface SidebarProps {
   className?: string;
@@ -20,6 +27,7 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
   const cookies = useCookies();
+  const pathname = usePathname();
   return (
     <div
       className={cn(
@@ -40,7 +48,7 @@ export function Sidebar({ className }: SidebarProps) {
         />
         <SidebarItem label="الامتحانات" href="/tests" iconSrc="/grade.svg" />
 
-        <div className="mt-auto">
+        <div className="mt-auto flex items-center">
           <Popover>
             <PopoverTrigger asChild>
               <Button className="mb-4 h-[55px] w-full justify-between">
@@ -94,6 +102,13 @@ export function Sidebar({ className }: SidebarProps) {
               </div>
             </PopoverContent>
           </Popover>
+          <SidebarButton
+            label="الإعدادات"
+            icon={SettingsIcon}
+            onClick={() => router.push("/settings")}
+            isActive={pathname.startsWith("/settings")}
+            
+          />
         </div>
       </div>
     </div>

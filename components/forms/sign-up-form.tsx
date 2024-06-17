@@ -30,6 +30,17 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { UploadcoursePdf } from "@/app/(main)/teacher/courses/_components/uploadpdf";
 
+const checkExistingparentParEmail = async (email: string) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/auth/user/${email}`,
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error(error.response?.data);
+  }
+};
+
 type FieldName = keyof SignUpValues;
 
 interface StepsType {
@@ -47,7 +58,7 @@ const steps: StepsType[] = [
   {
     id: "personal",
     name: "Fundamental Information",
-    fields: ["firstname", "lastname", "email"],
+    fields: ["firstname", "lastname", "email", "tel"],
   },
   {
     id: "password",
@@ -84,16 +95,24 @@ export function SignUpForm() {
       confirmPassword: "",
       roles: [],
       teacherverification: "",
+      tel: "",
     },
   });
 
   const signUp = async (values: SignUpValues) => {
     try {
+      const parent = await checkExistingparentParEmail(values.email);
+      if (parent) {
+        setError("البريد الإلكتروني موجود بالفعل");
+        return;
+      }
+
       console.log(file);
       //@ts-ignore
 
       values.teacherverification = file?.url;
-      console.log(values);
+
+      console.log("values" + values);
       startTransition(async () => {
         await axios.post("http://localhost:8080/api/auth/signup", values);
         setSuccess("تم إنشاء الحساب بنجاح");
@@ -112,6 +131,19 @@ export function SignUpForm() {
     });
 
     if (!output) return;
+    if (currentStep === 1) {
+      const parent = await checkExistingparentParEmail(
+        signUpForm.getValues().email,
+      );
+      if (parent) {
+        signUpForm.setError("email", {
+          type: "manual",
+          message: "البريد الإلكتروني موجود بالفعل",
+        });
+
+        return;
+      }
+    }
 
     if (currentStep < steps.length - 1) {
       if (currentStep === steps.length - 2) {
@@ -250,6 +282,22 @@ export function SignUpForm() {
                     </FormLabel>
                     <FormControl>
                       <Input type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signUpForm.control}
+                name="tel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      الهاتف
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

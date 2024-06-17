@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import React from "react";
 
 import Image from "next/image";
@@ -60,7 +61,6 @@ interface CourseCardProps {
 }
 
 function CourseCard({ course }: CourseCardProps) {
-
   const extractedquizes = course.quizzes;
   return (
     <Card className="w-full max-w-sm rounded-xl border">
@@ -88,7 +88,9 @@ function CourseCard({ course }: CourseCardProps) {
                 </Link>
               </Button>
             )}
-            {course.quizzes?.length! > 0 && <Tryquiz extractedquizes={extractedquizes!} />}
+            {course.quizzes?.length! > 0 && (
+              <Tryquiz extractedquizes={extractedquizes!} />
+            )}
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="font-medium">

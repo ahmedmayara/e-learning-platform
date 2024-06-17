@@ -70,11 +70,13 @@ export function ProfileClient({ parent }: ProfileClientProps) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
       {!switchAccount && (
         <>
-          {parent.children.length > 0 &&
+          {parent.children?.length > 0 &&
             parent.children.map((child) => (
               <ChildProfileBox key={child.id} child={child} href={`/learn`} />
             ))}
-          {parent.children.length === 0 || parent.children.length < 5 ? (
+          {parent.children?.length === 0 ||
+          parent.children?.length < 5 ||
+          !parent.children ? (
             <div className="flex items-center justify-center">
               <AddChildForm />
             </div>

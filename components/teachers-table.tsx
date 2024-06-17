@@ -32,7 +32,7 @@ const TeachersTable = async () => {
   const teachers = await getAllteachers();
 
   const filteredTeachers = teachers.filter((teacher) => {
-    return teacher.roles.some((role) => role.name === ERole.ROLE_TEACHER);
+    return teacher.roles?.some((role) => role.name === ERole.ROLE_TEACHER);
   });
 
   return (
@@ -55,7 +55,7 @@ const TeachersTable = async () => {
             </TableCell>
             <TableCell>{teacher?.email}</TableCell>
             <TableCell>
-              {teacher?.roles.map((role) => {
+              {teacher?.roles?.map((role) => {
                 if (role.name === ERole.ROLE_TEACHER) {
                   return "معلم";
                 }

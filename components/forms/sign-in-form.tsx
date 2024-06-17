@@ -28,6 +28,7 @@ interface AxiosSignInResponse {
   accessToken: string;
   tokenType: string;
   roles: string[];
+  verified: boolean;
 }
 
 export function SignInForm() {
@@ -46,32 +47,39 @@ export function SignInForm() {
 
   const onSubmit = async (values: SignInValues) => {
     try {
-      await axios
-        .post<AxiosSignInResponse>(
-          "http://localhost:8080/api/auth/signin",
-          values,
-        )
-        .then((res) => {
-          console.log(res.data);
-          if (res.data.roles.includes(ERole.ROLE_PARENT)) {
-            cookies.set("accessToken", res.data.accessToken, {
-              secure: true,
-            });
-            cookies.set("email", res.data.email, { secure: true });
-            router.push("/auth/profile");
-          } else {
-            if (res.data.roles.includes(ERole.ROLE_TEACHER)) {
-              cookies.set("accessToken", res.data.accessToken, {
-                secure: true,
-              });
-              cookies.set("email", res.data.email, { secure: true });
-              cookies.set("teacherId", res.data.id.toString(), {
-                secure: true,
-              });
-              router.push("/teacher/courses");
-            }
-          }
-        });
+      const response = await axios.post<AxiosSignInResponse>(
+        "http://localhost:8080/api/auth/signin",
+        values,
+      );
+
+      const fetchIfTheTeacherIsActivated = async (): Promise<boolean> => {
+        const res = await axios.get(
+          `http://localhost:8080/api/auth/user/${response.data.email}`,
+        );
+        if (
+          res.data.verified === false &&
+          response.data.roles.includes(ERole.ROLE_TEACHER)
+        ) {
+          setError("لم يتم تفعيل حسابك بعد");
+          console.log("Teacher is not activated");
+          return false;
+        }
+        return true;
+      };
+
+      const isActivated = await fetchIfTheTeacherIsActivated();
+      if (!isActivated) return;
+
+      if (response.data.roles.includes(ERole.ROLE_PARENT)) {
+        cookies.set("accessToken", response.data.accessToken, { secure: true });
+        cookies.set("email", response.data.email, { secure: true });
+        router.push("/auth/profile");
+      } else if (response.data.roles.includes(ERole.ROLE_TEACHER)) {
+        cookies.set("accessToken", response.data.accessToken, { secure: true });
+        cookies.set("email", response.data.email, { secure: true });
+        cookies.set("teacherId", response.data.id.toString(), { secure: true });
+        router.push("/teacher/courses");
+      }
     } catch (error: any) {
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 401) {
@@ -141,6 +149,13 @@ export function SignInForm() {
               className="font-bold text-sky-400 underline underline-offset-4"
             >
               سجل الآن
+            </Link>
+            <br />
+            <Link
+              href="/auth/reset"
+              className="font-bold text-sky-400 underline underline-offset-4"
+            >
+              نسيت كلمة المرور
             </Link>
           </div>
         </form>

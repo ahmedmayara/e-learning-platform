@@ -16,6 +16,28 @@ export const SignInSchema = z.object({
     .min(6, { message: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل" }),
 });
 
+export const ResetSchema=z.object({
+  email: z
+    .string({
+      required_error: "البريد الإلكتروني مطلوب",
+      invalid_type_error: "يجب أن يكون البريد الإلكتروني نص",
+    })
+    .email({ message: "يجب أن يكون البريد الإلكتروني صحيحاً" }),
+})
+
+export const ResetPassword=z.object({
+  newPassword: z.string({
+    required_error: "كلمة المرور مطلوبة",
+    invalid_type_error: "يجب أن تكون كلمة المرور نص",
+  })
+  .min(6, { message: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل" }),
+  confirmPassword: z.string({
+    required_error: "تأكيد كلمة المرور مطلوب",
+    invalid_type_error: "يجب أن تكون تأكيد كلمة المرور نص",
+  }),
+})
+
+
 export const SignUpSchema = z.object({
   email: z
     .string({
@@ -23,16 +45,33 @@ export const SignUpSchema = z.object({
       invalid_type_error: "يجب أن يكون البريد الإلكتروني نص",
     })
     .email({ message: "يجب أن يكون البريد الإلكتروني صحيحاً" }),
-  password: z
-    .string({
-      required_error: "كلمة المرور مطلوبة",
-      invalid_type_error: "يجب أن تكون كلمة المرور نص",
-    })
-    .min(8, { message: "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل" }),
+  // password: z
+  //   .string({
+  //     required_error: "كلمة المرور مطلوبة",
+  //     invalid_type_error: "يجب أن تكون كلمة المرور نص",
+  //   })
+  //   .min(8, { message: "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل" })
+  //   .refine((value) => {
+      
+  //     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+  //     return regex.test(value);
+  //   }, { message: "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم واحد على الأقل" }),
   confirmPassword: z.string({
     required_error: "تأكيد كلمة المرور مطلوب",
     invalid_type_error: "يجب أن تكون تأكيد كلمة المرور نص",
   }),
+  password: z.string({
+    required_error: "تأكيد كلمة المرور مطلوب",
+    invalid_type_error: "يجب أن تكون تأكيد كلمة المرور نص",
+  }),
+
+  tel: z
+  .string({
+    required_error: "الهاتف مطلوب",
+    invalid_type_error: "يجب أن يكون الهاتف نص",
+  })
+  .min(8, { message: "يجب أن يحتوي الهاتف على 8 أرقام على الأقل" })
+  .max(8, { message: "يجب أن يحتوي الهاتف على 8 أرقام على الأكثر" }),
   firstname: z
     .string({
       required_error: "الاسم مطلوب",
@@ -49,6 +88,7 @@ export const SignUpSchema = z.object({
     required_error: "يجب اختيار دور واحد على الأقل",
   }),
   teacherverification: z.optional(z.string()),
+ 
 });
 
 export const AddChildSchema = z.object({
@@ -227,3 +267,5 @@ export type AddChildValues = z.infer<typeof AddChildSchema>;
 export type AddCourseValues = z.infer<typeof AddCourseSchema>;
 export type AddTestValues = z.infer<typeof AddTestSchema>;
 export type addLiveMeetingValues = z.infer<typeof addLiveMeetingSchema>;
+export type ResetValues=z.infer<typeof ResetSchema>
+export type ResetPasswordValues=z.infer<typeof ResetPassword>
