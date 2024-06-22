@@ -107,7 +107,6 @@ export function Sidebar({ className }: SidebarProps) {
             icon={SettingsIcon}
             onClick={() => router.push("/settings")}
             isActive={pathname.startsWith("/settings")}
-            
           />
         </div>
       </div>

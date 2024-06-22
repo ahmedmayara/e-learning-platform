@@ -72,7 +72,7 @@ export function ProfileClient({ parent }: ProfileClientProps) {
         <>
           {parent.children?.length > 0 &&
             parent.children.map((child) => (
-              <ChildProfileBox key={child.id} child={child} href={`/learn`} />
+              <ChildProfileBox key={child.id} child={child} href={`/learn`}  parentemail={parent.email}/>
             ))}
           {parent.children?.length === 0 ||
           parent.children?.length < 5 ||

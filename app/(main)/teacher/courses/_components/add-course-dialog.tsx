@@ -28,6 +28,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { QuizModel } from "./addquizmodal";
 import { UploadcoursePdf } from "./uploadpdf";
@@ -47,7 +55,7 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
     resolver: zodResolver(AddCourseSchema),
     defaultValues: {
       video_url: "",
-      pdf_url: "",
+
       name: "",
       schoolLevel: "",
       subject: "",
@@ -62,7 +70,7 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
     values.quizzes = quizarreay;
     //@ts-ignore
     values.pdf_url = file?.url;
-    console.log(values);
+    console.log("values" + values);
 
     try {
       await axios
@@ -85,16 +93,32 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
       setError("حدث خطأ ما");
     }
   };
+  console.log(addCourseForm.getValues());
   const handelAddnewquiztothequizarreay = (quiz: Quiz[]) => {
     setQuizarreay([...quizarreay, ...quiz]);
   };
+
+  const schoolLevels = ["ابتدائي", "إعدادي", "ثانوي"];
+  const terms = ["الفصل الأول", "الفصل الثاني", "الفصل الثالث"];
+  const subjects = [
+    "اللغة العربية",
+    "اللغة الفرنسية",
+    "الرياضيات",
+    "العلوم الطبيعية",
+    "التاريخ",
+    "الجغرافيا",
+    "التربية الفنية",
+    "التربية الرياضية",
+    "الموسيقى",
+    "التكنولوجيا",
+  ];
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="primaryOutline">إضافة درس جديد</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] w-[600px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>إضافة درس جديد</DialogTitle>
           <DialogDescription>قم بإدخال بيانات الدرس الجديد</DialogDescription>
@@ -151,7 +175,18 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>المرحلة</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="اختر المستوى الدراسي" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {schoolLevels.map((level, index) => (
+                            <SelectGroup key={index}>
+                              <SelectItem value={level}>{level}</SelectItem>
+                            </SelectGroup>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,7 +203,19 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>الفصل</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          {/*  */}
+                          <SelectValue placeholder="الفصل" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {terms.map((level, index) => (
+                            <SelectGroup key={index}>
+                              <SelectItem value={level}>{level}</SelectItem>
+                            </SelectGroup>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -185,7 +232,18 @@ export function AddCourseDialog({ teacher }: AddCourseProps) {
                       <FormLabel>المادة</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="اختر المستوى الدراسي" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {subjects.map((level, index) => (
+                            <SelectGroup key={index}>
+                              <SelectItem value={level}>{level}</SelectItem>
+                            </SelectGroup>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

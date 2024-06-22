@@ -45,25 +45,22 @@ export const SignUpSchema = z.object({
       invalid_type_error: "يجب أن يكون البريد الإلكتروني نص",
     })
     .email({ message: "يجب أن يكون البريد الإلكتروني صحيحاً" }),
-  // password: z
-  //   .string({
-  //     required_error: "كلمة المرور مطلوبة",
-  //     invalid_type_error: "يجب أن تكون كلمة المرور نص",
-  //   })
-  //   .min(8, { message: "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل" })
-  //   .refine((value) => {
+   password: z
+     .string({
+       required_error: "كلمة المرور مطلوبة",
+       invalid_type_error: "يجب أن تكون كلمة المرور نص",
+     })
+     .min(8, { message: "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل" })
+     .refine((value) => {
       
-  //     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-  //     return regex.test(value);
-  //   }, { message: "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم واحد على الأقل" }),
+       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+       return regex.test(value);
+     }, { message: "يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم واحد على الأقل" }),
   confirmPassword: z.string({
     required_error: "تأكيد كلمة المرور مطلوب",
     invalid_type_error: "يجب أن تكون تأكيد كلمة المرور نص",
   }),
-  password: z.string({
-    required_error: "تأكيد كلمة المرور مطلوب",
-    invalid_type_error: "يجب أن تكون تأكيد كلمة المرور نص",
-  }),
+  
 
   tel: z
   .string({

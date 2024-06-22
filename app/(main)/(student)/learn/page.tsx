@@ -94,7 +94,7 @@ function CourseCard({ course }: CourseCardProps) {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="font-medium">
-              {course.teacher.firstname} {course.teacher.lastname}
+              {course.teacher?.firstname} {course.teacher?.lastname}
             </span>
             <Image
               alt="Instructor"

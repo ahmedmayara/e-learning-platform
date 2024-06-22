@@ -4,9 +4,11 @@ import React from "react";
 
 import { useRouter } from "next/navigation";
 import { AddChildSchema, AddChildValues } from "@/schemas";
+import { Student } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import axios from "axios";
+import { Edit } from "lucide-react";
 import { useCookies } from "next-client-cookies";
 import { useForm } from "react-hook-form";
 
@@ -38,7 +40,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function AddChildForm() {
+interface EditChildFormProps {
+  child: Student;
+}
+
+export function EditChildForm({ child }: EditChildFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
 
@@ -61,9 +67,9 @@ export function AddChildForm() {
   const addChildForm = useForm<AddChildValues>({
     resolver: zodResolver(AddChildSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      school_level: "",
+      firstname: child.firstname,
+      lastname: child.lastname,
+      school_level: child.school_level,
     },
   });
 
@@ -73,9 +79,12 @@ export function AddChildForm() {
       console.log(addChildForm.getValues());
       startTransition(async () => {
         await axios
-          .post(`http://localhost:8080/api/parents/${email}/addStudent`, values)
+          .put(
+            `http://localhost:8080/api/parents/${email}/updateStudent/${child.id}`,
+            values,
+          )
           .then((res) => {
-            setSuccess("تم إنشاء الحساب بنجاح");
+            setSuccess("تم تعديل الحساب بنجاح");
             setTimeout(() => {
               setSuccess(null);
               setOpen(false);
@@ -91,18 +100,14 @@ export function AddChildForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex cursor-pointer flex-col items-center">
-          <div className="flex items-center justify-center rounded-lg border bg-gray-500 p-4">
-            <PlusCircledIcon className="h-28 w-28 text-white" />
-          </div>
-          <h3 className="mt-4 text-lg font-semibold">إنشاء حساب جديد</h3>
-        </div>
+        <Edit className="h-6 w-6 text-gray-400" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>إنشاء حساب جديد</DialogTitle>
+          {/* it for edit child  */}
+          <DialogTitle>تعديل بيانات الطالب</DialogTitle>
           <DialogDescription>
-            يرجى ملء النموذج التالي لإنشاء حساب جديد
+            يمكنك تعديل بيانات الطالب من هنا
           </DialogDescription>
         </DialogHeader>
 
@@ -188,7 +193,7 @@ export function AddChildForm() {
             )}
 
             <Button variant="primary" type="submit" disabled={isPending}>
-              إنشاء
+              تأكيد
             </Button>
           </form>
         </Form>
